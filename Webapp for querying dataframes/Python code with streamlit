@@ -4,9 +4,9 @@ import pandas as pd
 import sys
 
 openai.api_type = "azure"
-openai.api_base = "https://openaitest123.openai.azure.com/"
+openai.api_base = "your-instance-uri"
 openai.api_version = "2022-12-01"
-openai.api_key = "27728085bf8a487782ccffc9a8e53efe"
+openai.api_key = "your-api-key"
 
 st.title("OpenAI Query Interface")
 
@@ -16,8 +16,19 @@ if st.button("Stop App"):
 
 test_db=pd.read_csv("SalesOrders.csv", delimiter=";")
 
-json_string = test_db.head().to_json(orient="records")
-pre_text=json_string
+# Create dataframe with 1000 rows
+df = pd.DataFrame({
+    'Sales Order': np.arange(1, 1001),
+    'Order Date': np.random.choice(pd.date_range(start='2020-01-01', end='2022-01-01'), 1000),
+    'Customer': [f'Customer {i}' for i in np.random.choice(10, 1000)],
+    'Product': [f"Product {chr(65+i%26)}" for i in np.random.choice(10,1000)],
+    'Quantity': np.random.randint(1, 100, 1000),
+    'Price': np.random.randint(10, 1000, 1000),
+    'Revenue': np.random.randint(1000, 100000, 1000)
+})
+
+pre_text = df.head(10).to_json(orient="records")
+
 
 query = st.text_input("Enter a prompt:")
 if query:
